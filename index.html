@@ -2373,24 +2373,11 @@ if (response.status === 429) {
         }
 
         function initAdminPresence() {
-    // Wir hören nur noch auf das Backend/Firebase, wir schreiben hier nicht mehr selbst.
-    database.ref('admin_presence').on('value', snap => {
-        const list = document.getElementById('presence-list');
-        list.innerHTML = '';
-        const data = snap.val() || {};
-        
-        // WICHTIG: Object.values nutzen, weil wir den echten Namen jetzt als Wert speichern!
-        const admins = Object.values(data);
-        
-        if(admins.length === 0) { 
-            list.innerHTML = '<span>Keine Admins online</span>'; 
-        } else {
-            admins.forEach(admin => {
-                list.innerHTML += `<div style="display:flex; align-items:center; margin-right: 12px;"><span class="presence-indicator presence-online"></span>${admin}</div>`;
+            database.ref('.info/connected').on('value', function(snapshot) {
+                if (snapshot.val() === false) return;
+                presenceRef = database.ref('admin_presence/' + currentAdminName);
+                presenceRef.onDisconnect().remove().then(() => { presenceRef.set(true); });
             });
-        }
-    });
-}
 
             database.ref('admin_presence').on('value', snap => {
                 const list = document.getElementById('presence-list');
@@ -3246,25 +3233,6 @@ function removeDbTag(key, tag) {
         updateTagsInBackend(key, userTags);
     }
 }
-
-// Ersatz für onDisconnect: Sende beim Schließen des Tabs ein Offline-Signal ans Backend
-window.addEventListener('beforeunload', () => {
-    const adminKey = sessionStorage.getItem('adminKey');
-    const adminName = sessionStorage.getItem('adminName');
-    
-    if (adminName && adminKey) {
-        // keepalive: true sorgt dafür, dass der fetch-Request auch beim Tab-Schließen garantiert rausgeht
-        fetch(`${API_URL}/admin/presence`, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'x-terminal-key': adminKey 
-            },
-            body: JSON.stringify({ adminName: adminName, status: 'offline' }),
-            keepalive: true 
-        }).catch(()=>{});
-    }
-});
 
     </script>
 </body>

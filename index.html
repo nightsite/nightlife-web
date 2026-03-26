@@ -2231,10 +2231,18 @@ async function postInboxComment(key) {
     try {
         // Schickt das Passwort sicher an DEIN Node.js Backend
         const response = await fetch(`${API_URL}/admin/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: passwordInput })
-        });
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: passwordInput })
+});
+
+// NEU: Den Rate-Limit Status abgreifen
+if (response.status === 429) {
+    const errorData = await response.json();
+    showToast(errorData.error || "Zu viele Versuche!", "#ff3333", "fas fa-user-shield");
+    loginBtn.innerText = "Gesperrt";
+    return; // Funktion hier abbrechen
+}
         
         const data = await response.json();
 

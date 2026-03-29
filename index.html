@@ -2201,42 +2201,19 @@ async function postInboxComment(key) {
         
         function closeAdminPanel() { document.getElementById('admin-modal').style.display = 'none'; }
         
-        async function logoutAdmin() {
-            const adminKey = sessionStorage.getItem('adminKey');
-            const adminName = sessionStorage.getItem('adminName');
-
-            // 1. Backend Bescheid geben (Presence auf offline setzen)
-            if (adminName && adminKey) {
-                try {
-                    await fetch(`${API_URL}/admin/presence`, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'x-terminal-key': adminKey 
-                        },
-                        body: JSON.stringify({ adminName: adminName, status: 'offline' })
-                    });
-                } catch (e) {
-                    console.error("Backend Presence konnte nicht entfernt werden");
-                }
-            }
-
-            // 2. Lokale Session-Daten löschen
+        function logoutAdmin() {
             sessionStorage.removeItem('adminRole');
             sessionStorage.removeItem('adminName');
             sessionStorage.removeItem('adminKey');
 
-            // 3. Wartungs-Bypass zurücksetzen
             localMaintenanceBypass = false;
             try { localStorage.setItem('adminBypass', 'false'); } catch(e) {}
             
-            // 4. UI schließen & benachrichtigen
             if(presenceRef) presenceRef.remove();
             closeAdminPanel();
             showToast("Admin-Session beendet.", "#ffaa00", "fas fa-sign-out-alt");
             
-            // 5. Icons updaten (Zurück zum User-Icon)
-            updateAuthUI(); 
+            updateAuthUI(); // Aktualisiere die Icons (Zurück zu normalen User falls angemeldet)
         }
 
         document.addEventListener('keydown', e => {
@@ -2254,18 +2231,10 @@ async function postInboxComment(key) {
     try {
         // Schickt das Passwort sicher an DEIN Node.js Backend
         const response = await fetch(`${API_URL}/admin/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: passwordInput })
-});
-
-// NEU: Den Rate-Limit Status abgreifen
-if (response.status === 429) {
-    const errorData = await response.json();
-    showToast(errorData.error || "Zu viele Versuche!", "#ff3333", "fas fa-user-shield");
-    loginBtn.innerText = "Gesperrt";
-    return; // Funktion hier abbrechen
-}
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: passwordInput })
+        });
         
         const data = await response.json();
 
@@ -2301,34 +2270,18 @@ if (response.status === 429) {
     }
 }
 
-        async function setAdminIdentity(name) {
-    if(!name.trim()) { showToast("Name eingeben!", "#ff3333", "fas fa-exclamation"); return; }
-    currentAdminName = name.trim();
-    const adminKey = sessionStorage.getItem('adminKey'); // Wir brauchen den Key für 'authenticate'
-
-    // Dem Backend sagen: Ich bin jetzt online!
-    try {
-        await fetch(`${API_URL}/admin/presence`, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'x-terminal-key': adminKey 
-            },
-            body: JSON.stringify({ adminName: currentAdminName, status: 'online' })
-        });
-    } catch (e) {
-        console.error("Presence konnte nicht gesetzt werden");
-    }
-
-    sessionStorage.setItem('adminRole', currentAdminRole);
-    sessionStorage.setItem('adminName', currentAdminName);
-    
-    document.getElementById('identity-section').style.display = 'none';
-    document.getElementById('loading-section').style.display = 'block';
-    document.getElementById('welcome-text').innerText = `WELCOME, ${currentAdminName.toUpperCase()}`;
-    
-    setTimeout(() => { finalizeAdminLogin(currentAdminRole, currentAdminName, false); }, 1500);
-}
+        function setAdminIdentity(name) {
+            if(!name.trim()) { showToast("Name eingeben!", "#ff3333", "fas fa-exclamation"); return; }
+            currentAdminName = name.trim();
+            sessionStorage.setItem('adminRole', currentAdminRole);
+            sessionStorage.setItem('adminName', currentAdminName);
+            
+            document.getElementById('identity-section').style.display = 'none';
+            document.getElementById('loading-section').style.display = 'block';
+            document.getElementById('welcome-text').innerText = `WELCOME, ${currentAdminName.toUpperCase()}`;
+            
+            setTimeout(() => { finalizeAdminLogin(currentAdminRole, currentAdminName, false); }, 1500);
+        }
 
         function finalizeAdminLogin(role, name, isRestoredSession) {
             currentAdminRole = role;

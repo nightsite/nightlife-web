@@ -868,3 +868,34 @@ window.updateMainEvent = async function() {
         btn.innerText = "EVENT LIVE SCHALTEN";
     }
 };
+
+window.deleteMainEvent = async function() {
+    const slot = document.getElementById('edit-ev-select').value;
+    
+    // Sicherheitsabfrage, damit man nicht aus Versehen klickt!
+    if (!confirm("Möchtest du dieses Event wirklich löschen?")) return;
+
+    try {
+        // Wir schicken einen DELETE-Befehl an das Backend
+        const response = await fetch(`${API_URL}/events/${slot}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            window.showToast("Event erfolgreich gelöscht!", "#ff3333", "fas fa-trash");
+            document.getElementById('edit-ev-title').value = '';
+            document.getElementById('edit-ev-time').value = '';
+            document.getElementById('edit-ev-date').value = '';
+            
+            // Ansicht sofort neu laden, damit die Karte wieder "leer" wird
+            if (typeof window.loadEvents === 'function') {
+                window.loadEvents(); 
+            }
+        } else {
+            window.showToast("Fehler beim Löschen", "#ff3333", "fas fa-times");
+        }
+    } catch (e) {
+        window.showToast("Backend offline!", "#ff3333", "fas fa-server");
+    }
+};

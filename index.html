@@ -255,26 +255,26 @@
                 </div>
 
                 <div id="term-content-events" style="background: #050505; border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
-    <p style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 15px;"><i class="fas fa-calendar-alt"></i> EVENT STEUERUNG</p>
-    
-    <select id="edit-ev-select" style="width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-family: 'Poppins'; outline: none; cursor: pointer;">
-        <option value="1">1. Event (Main)</option>
-        <option value="2">2. Event (Next)</option>
-        <option value="0">3. Event (Prev)</option>
-    </select>
-    
-    <input type="text" id="edit-ev-title" placeholder="Event Titel (z.B. Game Night)" style="width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-family: 'Poppins'; outline: none;">
-    
-    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-        <input type="text" id="edit-ev-time" placeholder="Uhrzeit (z.B. 20:00)" maxlength="5" oninput="formatTime(this)" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins'; outline: none; text-align: center;">
-        <input type="text" id="edit-ev-date" placeholder="Datum (z.B. 12.05.2026)" maxlength="10" oninput="formatDate(this)" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins'; outline: none; text-align: center;">
-    </div>
-    
-    <div style="display: flex; gap: 10px;">
-        <button onclick="updateMainEvent()" style="flex: 2; background: var(--neon-blue); color: #000; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">LIVE SCHALTEN</button>
-        <button onclick="deleteMainEvent()" style="flex: 1; background: #ff3333; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'"><i class="fas fa-trash"></i> LÖSCHEN</button>
-    </div>
-</div>
+                    <p style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 15px;"><i class="fas fa-calendar-alt"></i> EVENT STEUERUNG</p>
+                    
+                    <select id="edit-ev-select" style="width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-family: 'Poppins'; outline: none; cursor: pointer;">
+                        <option value="1">1. Event (Main)</option>
+                        <option value="2">2. Event (Next)</option>
+                        <option value="0">3. Event (Prev)</option>
+                    </select>
+                    
+                    <input type="text" id="edit-ev-title" placeholder="Event Titel (z.B. Game Night)" style="width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-family: 'Poppins'; outline: none;">
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="edit-ev-time" placeholder="Uhrzeit (z.B. 20:00)" maxlength="5" oninput="formatTime(this)" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins'; outline: none; text-align: center;">
+                        <input type="text" id="edit-ev-date" placeholder="Datum (z.B. 12.05.2026)" maxlength="10" oninput="formatDate(this)" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins'; outline: none; text-align: center;">
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="updateMainEvent()" style="flex: 2; background: var(--neon-blue); color: #000; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">LIVE SCHALTEN</button>
+                        <button onclick="deleteMainEvent()" style="flex: 1; background: #ff3333; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'"><i class="fas fa-trash"></i> LÖSCHEN</button>
+                    </div>
+                </div>
 
                 <div id="term-content-team" style="display: none; background: #050505; border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
                     <p style="color: var(--neon-gold); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 15px;"><i class="fas fa-users"></i> NEUEN TEAMLER ANLEGEN</p>

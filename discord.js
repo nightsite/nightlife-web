@@ -1,7 +1,8 @@
 async function updateDiscordStats() {
     try {
         // HIER DEINE RENDER-URL EINTRAGEN:
-        const response = await fetch('http://51.161.0.2:25585/api/discord-stats');
+        // Ändere die Zeile mit fetch zu dieser hier:
+const response = await fetch('http://51.161.0.2:25585/api/discord-stats');
         const data = await response.json();
         
         if (data.success) {

@@ -161,20 +161,39 @@
     </div>
 
     <div id="rules-modal" class="modal-base">
-        <div class="modal-box" style="border: 1px solid var(--neon-blue); width: 100%; max-width: 700px; max-height: 85vh;">
+        <div class="modal-box" style="border: 1px solid var(--neon-blue); width: 100%; max-width: 700px; max-height: 85vh; display: flex; flex-direction: column;">
             <div style="padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin: 0;">§ REGELWERK</h2>
+                <h2 style="font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin: 0; text-shadow: 0 0 10px var(--neon-blue);">§ REGELWERK</h2>
                 <span onclick="toggleRules()" style="cursor: pointer; color: #555; font-size: 2rem; line-height: 1; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">&times;</span>
             </div>
-            <div style="overflow-y: auto; padding: 20px 30px; text-align: left; width: 100%;" class="custom-scroll">
-                <p style="color: #aaa; font-size: 0.8rem; font-family: 'Poppins'; margin-bottom: 15px;">Durch die Nutzung des Servers stimmst du folgenden Regeln zu:</p>
-                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 15px;">Allgemeines Verhalten</h3>
-                <div class="rule-box"><span>1.</span> Behandle alle Mitglieder mit Respekt und Höflichkeit.</div>
-                <div class="rule-box"><span>2.</span> Keine Beleidigungen, Diskriminierung oder Hassrede.</div>
-                <div class="rule-box"><span>3.</span> Kein Spam (Nachrichten, Emojis, GIFs, Ping-Spam).</div>
-                <div class="rule-box"><span>4.</span> Keine NSFW (Not Safe For Work) oder illegale Inhalte.</div>
-                <div class="rule-box"><span>5.</span> Keine Fremdwerbung in Chats oder per Direktnachricht.</div>
-                <div class="rule-box"><span>6.</span> Das Verbreiten von persönlichen Daten (Doxxing) führt zum Permaban.</div>
+            
+            <div style="overflow-y: auto; padding: 20px 30px; text-align: left; flex: 1;" class="custom-scroll">
+                <p style="color: #aaa; font-size: 0.8rem; font-family: 'Poppins'; margin-bottom: 20px;">Durch das Betreten des Nightlife Discords stimmst du folgenden Regeln zu:</p>
+                
+                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px;">I. ALLGEMEINES VERHALTEN</h3>
+                <div class="rule-box"><span>1.</span> Behandle alle Mitglieder mit Respekt. Beleidigungen werden nicht toleriert.</div>
+                <div class="rule-box"><span>2.</span> Diskriminierung, Rassismus oder Hassrede führen zum sofortigen Ban.</div>
+                <div class="rule-box"><span>3.</span> Kein Spam (Texte, Emojis, Gifs oder Pings).</div>
+                <div class="rule-box"><span>4.</span> Keine NSFW (18+) Inhalte in öffentlichen Kanälen.</div>
+                <div class="rule-box"><span>5.</span> Eigenwerbung (Discord-Links, YouTube etc.) ist streng untersagt.</div>
+                <div class="rule-box"><span>6.</span> Das Veröffentlichen privater Daten (Doxxing) ist verboten.</div>
+                
+                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 25px;">II. VOICE & CHAT REGELN</h3>
+                <div class="rule-box"><span>7.</span> Störende Geräusche oder übermäßiger Soundboard-Einsatz sind untersagt.</div>
+                <div class="rule-box"><span>8.</span> Stimmenverzerrer sind in öffentlichen Calls nicht erlaubt.</div>
+                <div class="rule-box"><span>9.</span> Nutze die Kanäle nur für ihren vorgesehenen Zweck.</div>
+                <div class="rule-box"><span>10.</span> Kein Trolling oder absichtliches Provozieren von Teamlern/Usern.</div>
+                <div class="rule-box"><span>11.</span> Aufnahmen von Voice-Chats sind ohne Zustimmung verboten.</div>
+                
+                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 25px;">III. ADMINISTRATION</h3>
+                <div class="rule-box"><span>12.</span> Den Anweisungen des Teams (Founder, Admin, Mod) ist Folge zu leisten.</div>
+                <div class="rule-box"><span>13.</span> Support-Anfragen werden ausschließlich über das Ticketsystem geklärt.</div>
+                <div class="rule-box"><span>14.</span> Das Ausnutzen von Sicherheitslücken (Exploits) führt zum Ausschluss.</div>
+
+                <h3 style="color: #ff3333; font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 30px;">⚖️ SANKTIONEN</h3>
+                <div class="sanction-box"><strong>Verwarnung:</strong> Bei leichten Verstößen gegen das Regelwerk.</div>
+                <div class="sanction-box"><strong>Mute:</strong> Zeitweiser Ausschluss aus Chat und Voice.</div>
+                <div class="sanction-box" style="border-left-color: #8b0000; background: rgba(139, 0, 0, 0.1);"><strong>Ban:</strong> Permanenter Ausschluss vom Server.</div>
             </div>
         </div>
     </div>

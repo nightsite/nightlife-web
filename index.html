@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nightlife Discord</title>
+    
+    <link rel="icon" type="image/png" href="logo.png?v=1">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+    <div class="particles"></div>
+
+    <div id="toast-container"></div>
+    <div id="ghost-banner">
+        <i class="fas fa-bullhorn" style="font-size: 1.5rem;"></i>
+        <span id="ghost-banner-text">SYSTEM BROADCAST...</span>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="live-dot" title="Server Live"></div>
+                <a href="#home" class="logo">NIGHTLIFE</a>
+            </div>
+            <div class="menu-toggle" id="mobile-menu">☰</div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="javascript:void(0)" onclick="showDailyToast()" class="daily-btn"><i class="fas fa-gift"></i> DAILY</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#discord">Discord</a></li>
+                <li><a href="#team">Teamler</a></li>
+                <li><a href="#highlights">Highlights</a></li>
+                <li><a href="#" title="Leaderboard" style="color: #ffaa00; font-size: 1.1rem; text-shadow: 0 0 10px rgba(255, 170, 0, 0.5); display: flex; align-items: center; justify-content: center;"><i class="fas fa-trophy"></i></a></li>
+                <li><a href="javascript:void(0)" onclick="toggleImpressum()" style="color: var(--neon-purple); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 1.5px; text-shadow: 0 0 12px rgba(176, 38, 255, 0.6); display: flex; align-items: center; gap: 8px;"><i class="fas fa-info-circle" style="font-size: 0.9rem;"></i> INFO</a></li>
+                <li><a href="javascript:void(0)" onclick="toggleRules()" style="color: var(--neon-blue); font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 0.8rem; letter-spacing: 1.5px; text-shadow: 0 0 12px rgba(0, 240, 255, 0.6); display: flex; align-items: center; gap: 8px;"><i class="fas fa-gavel" style="font-size: 0.9rem;"></i> REGELN</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home">
+        <h1 class="home-title scroll-hidden">NIGHTLIFE</h1>
+        <p class="scroll-hidden" style="font-size: 1.3rem; color: #aaa; margin-top: 10px;">Der exklusivste Server auf Discord.</p>
+        
+        <div class="stats-container scroll-hidden">
+            <div class="stat-item"><h3 id="stat-total" style="color: #fff; text-shadow: 0 0 15px var(--neon-blue);">70</h3><p>TOTAL</p></div>
+            <div class="stat-item"><h3 id="stat-online" style="color: #00ffaa; text-shadow: 0 0 15px #00ffaa;">28</h3><p>Online</p></div>
+            <div class="stat-item"><h3 id="stat-voice" style="color: #ffaa00; text-shadow: 0 0 15px #ffaa00;">0</h3><p>In Calls</p></div>
+            <div class="stat-item"><h3 id="stat-offline" style="color: #ff3333; text-shadow: 0 0 15px #ff3333;">42</h3><p>Offline</p></div>
+        </div>
+
+        <div class="carousel-container scroll-hidden">
+            <div class="carousel-track" id="event-track">
+                <div class="event-card prev" data-index="0" onclick="moveCarousel(-1)">
+                    <div class="slot-indicator ind-sub">3. Event</div><div class="event-timer" id="timer-0">--:--:--</div>
+                    <span class="live-badge" id="badge-0">SOON</span><div class="ev-title" id="title-0">In Planung</div><div class="ev-full-date" id="date-0">Termin folgt</div>
+                </div>
+                <div class="event-card active" data-index="1">
+                    <div class="slot-indicator ind-main">1. Event (MAIN)</div><div class="event-timer" id="timer-1">00:00:00</div>
+                    <span class="live-badge" id="badge-1">SOON</span><div class="ev-title" id="title-1">Lade Events...</div><div class="ev-full-date" id="date-1">Bitte warten</div>
+                </div>
+                <div class="event-card next" data-index="2" onclick="moveCarousel(1)">
+                    <div class="slot-indicator ind-sub">2. Event</div><div class="event-timer" id="timer-2">--:--:--</div>
+                    <span class="live-badge" id="badge-2">SOON</span><div class="ev-title" id="title-2">In Planung</div><div class="ev-full-date" id="date-2">Termin folgt</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-controls scroll-hidden">
+            <button class="carousel-btn" onclick="moveCarousel(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="carousel-btn" onclick="moveCarousel(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <div class="neon-divider"></div>
+
+    <section id="discord" class="scroll-hidden">
+        <h2>Werde Teil der Nacht</h2>
+        <p class="section-desc">Hol dir deinen Platz auf dem Server.</p>
+        <div class="join-container">
+            <div class="join-feature">
+                <span class="feature-icon">🎮</span><h4>Game Nights</h4><p>Zusammen zocken, neue Mates finden und Ränge aufsteigen.</p>
+            </div>
+            <div class="join-main">
+                <a href="https://discord.gg/nightlife" target="_blank">Jetzt beitreten</a>
+            </div>
+            <div class="join-feature">
+                <span class="feature-icon">🎬</span><h4>Cinema & Chill</h4><p>Gemeinsam die neusten Filme und Serien-Marathons genießen.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="neon-divider"></div>
+
+    <section id="team">
+        <h2 class="scroll-hidden">Night Teamler</h2>
+        <div class="team-grid-main">
+            <div class="team-card scroll-hidden rank-founder-card"> 
+                <div class="role">Founder</div><div class="name rank-founder">Can <span class="founder-crown">👑</span></div> 
+            </div>
+            <div class="team-card scroll-hidden rank-founder-card"> 
+                <div class="role">Founder</div><div class="name rank-founder">Asta <span class="dev-icon">{&lt;/&gt;}</span></div> 
+            </div>
+        </div>
+        <div class="team-bar-mini scroll-hidden" style="min-height: 50px;">
+            <div id="team-bar-js" style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; width: 100%;"></div>
+        </div>
+    </section>
+
+    <div class="neon-divider"></div>
+
+    <section id="highlights">
+        <h2 class="scroll-hidden">Wall of Fame</h2>
+        <div class="video-grid"> 
+            <div class="video-wrapper scroll-hidden"><div class="clip-info">6ix9ine</div><div class="media-container">Clip 1</div></div>
+            <div class="video-wrapper scroll-hidden"><div class="clip-info">Taste the Rainbow</div><div class="media-container">Clip 2</div></div>
+            <div class="video-wrapper scroll-hidden"><div class="clip-info">Mein Mann darf das nicht erfahren</div><div class="media-container">Clip 3</div></div>
+        </div>
+    </section>
+
+    <section id="upload-section" class="scroll-hidden" style="text-align: center; margin-top: 20px; padding-bottom: 80px;">
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px var(--neon-purple); margin-bottom: 15px;">Werde Teil der Wall of Fame</h3>
+        <p style="color: #aaa; margin-bottom: 40px; letter-spacing: 1px;">Zeig der Community deine besten Momente!</p>
+        <button onclick="openForm('clip')" class="upload-btn"><span class="upload-icon">⬆️</span> Clip Einreichen</button>
+    </section>
+
+    <footer style="text-align: center; padding: 60px 20px 40px; background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.03); margin-top: 50px; position: relative; z-index: 10;">
+        <p style="color: #444; font-size: 0.85rem; letter-spacing: 1px; font-family: 'Poppins', sans-serif;">&copy; 2026 Nightlife Discord. All rights reserved.</p>
+        <div style="margin-top: 25px; display: flex; justify-content: center; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <button onclick="window.openForm('unban')" class="footer-btn unban-btn"><span class="btn-icon">🚫</span> UNBAN</button>
+            <button onclick="window.openForm('vorschlag')" class="footer-btn vorschlag-btn"><span class="btn-icon">💡</span> VORSCHLAG</button>
+            <button onclick="window.openForm('ticket')" class="footer-btn ticket-btn"><span class="btn-icon">🎫</span> TICKET</button>
+            <button onclick="window.openAdminPanel()" class="footer-btn staff-btn"><span class="btn-icon">🔒</span> STAFF</button>
+        </div>
+    </footer>
+
+    <div id="impressum-modal" class="modal-base">
+        <div class="modal-box" style="border: 1px solid var(--neon-purple); width: 100%; max-width: 600px; box-shadow: 0 0 40px rgba(176, 38, 255, 0.15);">
+            <div style="padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-family: 'Orbitron'; font-size: 1.2rem; color: #fff; margin: 0;">INFO & IMPRESSUM</h2>
+                <span onclick="toggleImpressum()" style="cursor: pointer; color: #555; font-size: 2rem;">&times;</span>
+            </div>
+            <div style="padding: 30px; text-align: left; font-family: 'Poppins';">
+                <h3 style="color: var(--neon-purple); font-family: 'Orbitron'; font-size: 0.9rem; margin-bottom: 10px;">ÜBER NIGHTLIFE</h3>
+                <p style="color: #aaa; font-size: 0.9rem; line-height: 1.6; margin-bottom: 25px;">NIGHTLIFE ist mehr als nur ein Discord-Server. Wir sind eine wachsende Community aus Gamern, Filmliebhabern und Nachtschwärmern.</p>
+                <h3 style="color: var(--neon-purple); font-family: 'Orbitron'; font-size: 0.9rem; margin-bottom: 10px;">PROJEKTLEITUNG</h3>
+                <p style="color: #ddd; font-size: 0.9rem;">Can & Asta</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="rules-modal" class="modal-base">
+        <div class="modal-box" style="border: 1px solid var(--neon-blue); width: 100%; max-width: 700px; max-height: 85vh; display: flex; flex-direction: column;">
+            <div style="padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin: 0; text-shadow: 0 0 10px var(--neon-blue);">§ REGELWERK</h2>
+                <span onclick="toggleRules()" style="cursor: pointer; color: #555; font-size: 2rem; line-height: 1; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">&times;</span>
+            </div>
+            
+            <div style="overflow-y: auto; padding: 20px 30px; text-align: left; flex: 1;" class="custom-scroll">
+                <p style="color: #aaa; font-size: 0.8rem; font-family: 'Poppins'; margin-bottom: 20px;">Durch das Betreten des Nightlife Discords stimmst du folgenden Regeln zu:</p>
+                
+                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px;">I. ALLGEMEINES VERHALTEN</h3>
+                <div class="rule-box"><span>1.</span> Behandle alle Mitglieder mit Respekt. Beleidigungen werden nicht toleriert.</div>
+                <div class="rule-box"><span>2.</span> Diskriminierung, Rassismus oder Hassrede führen zum sofortigen Ban.</div>
+                <div class="rule-box"><span>3.</span> Kein Spam (Texte, Emojis, Gifs oder Pings).</div>
+                <div class="rule-box"><span>4.</span> Keine NSFW (18+) Inhalte in öffentlichen Kanälen.</div>
+                <div class="rule-box"><span>5.</span> Eigenwerbung (Discord-Links, YouTube etc.) ist streng untersagt.</div>
+                <div class="rule-box"><span>6.</span> Das Veröffentlichen privater Daten (Doxxing) ist verboten.</div>
+                
+                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 25px;">II. VOICE & CHAT REGELN</h3>
+                <div class="rule-box"><span>7.</span> Störende Geräusche oder übermäßiger Soundboard-Einsatz sind untersagt.</div>
+                <div class="rule-box"><span>8.</span> Stimmenverzerrer sind in öffentlichen Calls nicht erlaubt.</div>
+                <div class="rule-box"><span>9.</span> Nutze die Kanäle nur für ihren vorgesehenen Zweck.</div>
+                <div class="rule-box"><span>10.</span> Kein Trolling oder absichtliches Provozieren von Teamlern/Usern.</div>
+                <div class="rule-box"><span>11.</span> Aufnahmen von Voice-Chats sind ohne Zustimmung verboten.</div>
+                
+                <h3 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 25px;">III. ADMINISTRATION</h3>
+                <div class="rule-box"><span>12.</span> Den Anweisungen des Teams (Founder, Admin, Mod) ist Folge zu leisten.</div>
+                <div class="rule-box"><span>13.</span> Support-Anfragen werden ausschließlich über das Ticketsystem geklärt.</div>
+                <div class="rule-box"><span>14.</span> Das Ausnutzen von Sicherheitslücken (Exploits) führt zum Ausschluss.</div>
+
+                <h3 style="color: #ff3333; font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 10px; margin-top: 30px;">⚖️ SANKTIONEN</h3>
+                <div class="sanction-box"><strong>Verwarnung:</strong> Bei leichten Verstößen gegen das Regelwerk.</div>
+                <div class="sanction-box"><strong>Mute:</strong> Zeitweiser Ausschluss aus Chat und Voice.</div>
+                <div class="sanction-box" style="border-left-color: #8b0000; background: rgba(139, 0, 0, 0.1);"><strong>Ban:</strong> Permanenter Ausschluss vom Server.</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="universal-modal" class="modal-base">
+        <div id="modal-content-box" class="modal-box" style="border: 1px solid var(--neon-blue); padding: 30px; width: 90%; max-width: 450px;">
+            <h3 id="form-title" style="font-family: 'Orbitron'; color: #fff; margin-bottom: 20px; margin-top: 0; text-transform: uppercase; letter-spacing: 2px;">Formular</h3>
+            <div style="overflow-y: auto; flex: 1; min-height: 0; width: 100%; padding-right: 5px;" class="custom-scroll">
+                <div id="form-fields">
+                    <input type="text" id="form-username" placeholder="Discord Username" style="width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; font-family: 'Poppins'; margin-bottom: 15px;">
+                    <select id="form-ticket-type" style="display: none; width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; font-family: 'Poppins'; margin-bottom: 15px;">
+                        <option value="Allgemein Support">Allgemein Support</option>
+                        <option value="Bewerbung">Bewerbung</option>
+                        <option value="Report">Report</option>
+                    </select>
+                    <div id="file-upload-area" style="display: none; margin-bottom: 15px; text-align: left;">
+                        <p id="file-upload-desc" style="color: #ffaa00; font-size: 0.7rem; margin-bottom: 5px; font-weight: bold; font-family: 'Poppins';">Media Upload (Max. 1MB)</p>
+                        <input type="file" id="form-file" accept="video/mp4, image/jpeg, image/png" style="color: #ccc; font-size: 0.8rem; width: 100%; background: #000; border: 1px solid #333; padding: 8px; border-radius: 8px; font-family: 'Poppins';">
+                    </div>
+                    <textarea id="form-text" placeholder="Deine Nachricht..." rows="4" style="width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; font-family: 'Poppins'; resize: none; margin-bottom: 15px;"></textarea>
+                    <button id="submit-universal-btn" onclick="submitUniversalForm()" style="width: 100%; background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue)); color: #fff; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;">ABSENDEN</button>
+                </div>
+            </div>
+            <p onclick="closeUniversalModal()" style="color: #444; margin-top: 20px; cursor: pointer; font-size: 0.8rem; font-family: 'Orbitron';">ABBRECHEN</p>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-base" onclick="if(event.target.id === 'admin-modal') this.style.display='none'" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 30000; backdrop-filter: blur(8px); align-items: center; justify-content: center;">
+        <div class="modal-box" style="position: relative; border: 1px solid var(--neon-purple); padding: 30px; width: 90%; max-width: 600px; box-shadow: 0 0 30px rgba(176, 38, 255, 0.2); background: #111; border-radius: 20px; text-align: center;">
+            
+            <div style="position: absolute; top: 15px; right: 20px;">
+                <span onclick="document.getElementById('admin-modal').style.display='none'" style="cursor: pointer; color: #555; font-size: 2rem; line-height: 1; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'" title="Terminal schließen">&times;</span>
+            </div>
+            
+            <div id="admin-login-view">
+                <h3 style="font-family: 'Orbitron', sans-serif; color: #fff; margin-bottom: 25px; margin-top: 0; letter-spacing: 2px;">System Login</h3>
+                <input type="password" id="admin-pw" placeholder="Passwort" style="width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; text-align: center; font-family: 'Poppins';">
+                <button onclick="checkAdminLogin()" style="width: 100%; background: var(--neon-purple); color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold;">LOGIN</button>
+                <p onclick="document.getElementById('admin-modal').style.display='none'" style="color: #555; cursor: pointer; font-size: 0.8rem; margin-top: 20px; font-family: 'Orbitron';">SCHLIESSEN</p>
+            </div>
+
+            <div id="admin-identity-view" style="display: none; text-align: center;">
+                <h3 style="font-family: 'Orbitron'; color: var(--neon-gold); margin-bottom: 20px; margin-top: 0; text-shadow: 0 0 15px var(--neon-gold);">IDENTITÄT WÄHLEN</h3>
+                <p style="color: #aaa; font-family: 'Poppins'; font-size: 0.9rem; margin-bottom: 20px;">Willkommen zurück. Wer loggt sich gerade ein?</p>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
+                    <button onclick="selectFounderIdentity('Can')" style="flex: 1; background: #111; border: 1px solid var(--neon-gold); color: #fff; padding: 15px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; font-size: 1.1rem; transition: 0.3s;" onmouseover="this.style.background='var(--neon-gold)'; this.style.color='#000'" onmouseout="this.style.background='#111'; this.style.color='#fff'">CAN 👑</button>
+                    <button onclick="selectFounderIdentity('Asta')" style="flex: 1; background: #111; border: 1px solid var(--neon-gold); color: #fff; padding: 15px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; font-size: 1.1rem; transition: 0.3s;" onmouseover="this.style.background='var(--neon-gold)'; this.style.color='#000'" onmouseout="this.style.background='#111'; this.style.color='#fff'">ASTA {&lt;/&gt;}</button>
+                </div>
+            </div>
+
+            <div id="admin-dashboard-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-family: 'Orbitron'; color: var(--neon-gold); margin: 0;">TERMINAL</h3>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    <button onclick="switchTerminalTab('events')" class="term-tab" style="background: transparent; color: #fff; border: none; font-family: 'Orbitron'; cursor: pointer; border-bottom: 2px solid var(--neon-blue);">Events</button>
+                    <button onclick="switchTerminalTab('team')" id="team-tab-btn" class="term-tab" style="background: transparent; color: #888; border: none; font-family: 'Orbitron'; cursor: pointer; border-bottom: 2px solid transparent; display: none;">Teamler</button>
+                </div>
+
+                <div id="term-content-events" style="background: #050505; border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
+                    <p style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 15px;"><i class="fas fa-calendar-alt"></i> EVENT STEUERUNG</p>
+                    
+                    <select id="edit-ev-select" style="width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-family: 'Poppins'; outline: none; cursor: pointer;">
+                        <option value="1">1. Event (Main)</option>
+                        <option value="2">2. Event (Next)</option>
+                        <option value="0">3. Event (Prev)</option>
+                    </select>
+                    
+                    <input type="text" id="edit-ev-title" placeholder="Event Titel (z.B. Game Night)" style="width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-family: 'Poppins'; outline: none;">
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="edit-ev-time" placeholder="Uhrzeit (z.B. 20:00)" maxlength="5" oninput="formatTime(this)" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins'; outline: none; text-align: center;">
+                        <input type="text" id="edit-ev-date" placeholder="Datum (z.B. 12.05.2026)" maxlength="10" oninput="formatDate(this)" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins'; outline: none; text-align: center;">
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="updateMainEvent()" style="flex: 2; background: var(--neon-blue); color: #000; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">LIVE SCHALTEN</button>
+                        <button onclick="deleteMainEvent()" style="flex: 1; background: #ff3333; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'"><i class="fas fa-trash"></i> LÖSCHEN</button>
+                    </div>
+                </div>
+
+                <div id="term-content-team" style="display: none; background: #050505; border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
+                    <p style="color: var(--neon-gold); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 15px;"><i class="fas fa-users"></i> NEUEN TEAMLER ANLEGEN</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="new-team-name" placeholder="Discord Name" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins';">
+                        <select id="new-team-role" style="background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins';">
+                            <option value="Admin">Admin</option>
+                            <option value="Mod">Mod</option>
+                            <option value="Support">Support</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="new-team-pw" placeholder="Passwort vergeben" style="flex: 1; background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 5px; font-family: 'Poppins';">
+                        <button onclick="createTeamMember()" style="background: var(--neon-gold); color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold;"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <p style="color: #aaa; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 10px; margin-top: 20px;">AKTUELLES TEAM:</p>
+                    <div id="admin-team-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;" class="custom-scroll">
+                    </div>
+                </div>
+
+                <button onclick="logoutAdmin()" style="width: 100%; background: #333; color: #fff; border: 1px solid #555; padding: 12px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold;">SYSTEM LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="discord.js"></script>
+
+    <div id="fab-container">
+        <div class="fab-actions" id="fab-actions">
+            <div class="fab-action" id="fab-terminal" onclick="openAdminPanel()" title="Admin Terminal" style="display: none;">
+                <i class="fas fa-terminal"></i>
+            </div>
+            <div class="fab-action" id="fab-inbox" onclick="openInbox('Posteingang ist noch leer.', 'var(--neon-blue)', 'fas fa-inbox')" title="Posteingang">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <div class="fab-action" id="fab-logout" onclick="logoutUser()" title="Abmelden">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
+        
+        <div id="fab-main" onclick="handleFabClick()">
+            <i class="fas fa-user" id="fab-icon"></i>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal-base" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 30000; backdrop-filter: blur(8px); align-items: center; justify-content: center;">
+        <div style="background: #111; border: 1px solid var(--neon-blue); padding: 30px; width: 90%; max-width: 400px; border-radius: 20px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.2); text-align: center;">
+            <h3 style="font-family: 'Orbitron'; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px;">User Portal</h3>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1; background: var(--neon-blue); color: #000; border: none; padding: 10px; border-radius: 5px; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; transition:0.3s;">LOGIN</button>
+                <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1; background: #222; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 5px; font-family: 'Orbitron'; cursor: pointer; transition:0.3s;">REGISTER</button>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 20px;">
+                <input type="text" id="auth-user" placeholder="Username" style="width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; outline: none; font-family: 'Poppins'; transition:0.3s;">
+                <input type="password" id="auth-pass" placeholder="Passwort" style="width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; font-family: 'Poppins'; transition:0.3s;">
+            </div>
+
+            <button id="auth-submit-btn" onclick="submitAuth()" style="width: 100%; background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; transition:0.3s;">Einloggen</button>
+            <p onclick="document.getElementById('auth-modal').style.display='none'" style="color: #444; margin-top: 20px; cursor: pointer; font-size: 0.8rem; font-family: 'Orbitron';">ABBRECHEN</p>
+        </div>
+    </div>
+
+    <div id="inbox-modal" class="modal-base" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 30000; backdrop-filter: blur(8px); align-items: center; justify-content: center;">
+        <div style="background: #111; border: 1px solid var(--neon-gold); width: 95%; max-width: 1000px; height: 85vh; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(255, 170, 0, 0.2);">
+            
+            <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-gold); margin: 0; text-shadow: 0 0 10px rgba(255,170,0,0.5);"><i class="fas fa-inbox"></i> POSTEINGANG</h2>
+                <span onclick="document.getElementById('inbox-modal').style.display='none'" style="cursor: pointer; color: #555; font-size: 2rem; line-height: 1;">&times;</span>
+            </div>
+            
+            <style>
+                .inbox-tab { flex: 1; padding: 15px 0; background: transparent; border: none; color: #888; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.3s; font-weight: bold;}
+                .inbox-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
+                .inbox-tab.active { color: var(--neon-gold); border-bottom: 2px solid var(--neon-gold); }
+            </style>
+            <div style="display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);" id="inbox-tabs">
+                <button onclick="filterInbox('all')" class="inbox-tab active" id="tab-all">Alles</button>
+                <button onclick="filterInbox('ticket')" class="inbox-tab" id="tab-ticket">Tickets</button>
+                <button onclick="filterInbox('unban')" class="inbox-tab" id="tab-unban">Unban</button>
+                <button onclick="filterInbox('vorschlag')" class="inbox-tab" id="tab-vorschlag">Vorschläge</button>
+                <button onclick="filterInbox('closed')" class="inbox-tab" id="tab-closed" style="color: #555;">Erledigt</button>
+            </div>
+
+            <div style="display: flex; flex: 1; overflow: hidden;">
+                <div style="width: 35%; border-right: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); overflow-y: auto; padding: 15px;" id="inbox-list" class="custom-scroll">
+                </div>
+                <div style="width: 65%; display: flex; flex-direction: column; background: #0a0a0a;" id="inbox-detail">
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #666; font-family: 'Orbitron';">Wähle einen Eintrag aus.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

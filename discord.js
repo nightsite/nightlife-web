@@ -1,7 +1,7 @@
 async function updateDiscordStats() {
     try {
         // HIER DEINE RENDER-URL EINTRAGEN:
-        const response = await fetch('https://nightlife-backend-vijo.onrender.com/api/discord-stats');
+        const response = await fetch('http://51.161.0.2:25585/api/discord-stats');
         const data = await response.json();
         
         if (data.success) {

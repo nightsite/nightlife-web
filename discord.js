@@ -2,7 +2,7 @@ async function updateDiscordStats() {
     try {
         // HIER DEINE RENDER-URL EINTRAGEN:
         // Ändere die Zeile mit fetch zu dieser hier:
-const response = await fetch('//51.161.0.2:25585/api/discord-stats');
+const response = await fetch('https://corsproxy.io/?http://51.161.0.2:25585/api/discord-stats');
         const data = await response.json();
         
         if (data.success) {

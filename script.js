@@ -295,7 +295,11 @@ window.loadPublicTeam = async function() {
 
 // Lädt das Team auf der Website automatisch beim Start!
 document.addEventListener('DOMContentLoaded', () => {
+    window.updateFabUI();
     window.loadPublicTeam();
+    window.loadEvents(); // <-- DAS HIER NEU HINZUFÜGEN!
+    
+    // ... restlicher Code ...
 });
 
 window.logoutAdmin = function() { window.logoutUser(); };
@@ -733,6 +737,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+window.loadEvents = async function() {
+    try {
+        const response = await fetch(`${API_URL}/events`);
+        const data = await response.json();
+        
+        if (data.success) {
+            data.data.forEach(ev => {
+                const titleEl = document.getElementById(`title-${ev.slot}`);
+                const dateEl = document.getElementById(`date-${ev.slot}`);
+                const badgeEl = document.getElementById(`badge-${ev.slot}`);
+                
+                if (titleEl) titleEl.innerText = ev.title;
+                if (dateEl) dateEl.innerText = ev.date;
+                
+                // Timer Logik starten
+                if (ev.time && ev.date) {
+                    startTimer(ev.slot, `${ev.date} ${ev.time}`);
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Events konnten nicht geladen werden.");
+    }
+};
+
+// Hilfsfunktion für den Countdown
+function startTimer(slot, targetStr) {
+    const timerEl = document.getElementById(`timer-${slot}`);
+    if (!timerEl) return;
+
+    function update() {
+        // Umwandlung von DD.MM.YYYY HH:MM zu einem Datumsobjekt
+        const parts = targetStr.split(/[\s.:]+/);
+        const targetDate = new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]);
+        const now = new Date();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+            timerEl.innerText = "JETZT LIVE";
+            document.getElementById(`badge-${slot}`).innerText = "LIVE";
+            document.getElementById(`badge-${slot}`).style.background = "red";
+            return;
+        }
+
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        timerEl.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+    
+    update();
+    setInterval(update, 1000);
+}
+
 // --- EVENT FUNKTIONEN ---
 window.formatTime = function(input) {
     let val = input.value.replace(/\D/g, '');
@@ -768,6 +826,7 @@ window.updateMainEvent = async function() {
         
         if (data.success) {
             window.showToast("Event erfolgreich aktualisiert!", "#00ffaa", "fas fa-calendar-check");
+            window.loadEvents();
             document.getElementById('edit-ev-title').value = '';
             document.getElementById('edit-ev-time').value = '';
             document.getElementById('edit-ev-date').value = '';

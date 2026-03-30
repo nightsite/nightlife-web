@@ -1,7 +1,7 @@
 // =========================================
 // 1. GLOBALE VARIABLEN & CONFIG
 // =========================================
-const API_URL = "http://localhost:3000/api"; // <-- HIER DEINEN RENDER-LINK EINTRAGEN FÜR GITHUB!
+const API_URL = "https://nightlife-backend-vijo.onrender.com/api"; // <-- HIER DEINEN RENDER-LINK EINTRAGEN FÜR GITHUB!
 window.isAdminView = false;
 
 // =========================================

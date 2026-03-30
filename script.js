@@ -1,7 +1,7 @@
 // =========================================
 // 1. GLOBALE VARIABLEN & CONFIG
 // =========================================
-const API_URL = "https://nightlife-backend-vijo.onrender.com/api"; // <-- HIER DEINEN RENDER-LINK EINTRAGEN FÜR GITHUB!
+const API_URL = "https://nightlife-backend-vijo.onrender.com/api";
 window.isAdminView = false;
 
 // =========================================
@@ -125,13 +125,13 @@ window.applyAdminUI = function(role, name) {
         title.innerText = `FOUNDER TERMINAL [${name.toUpperCase()}]`;
         title.style.color = 'var(--neon-gold)';
         title.style.textShadow = '0 0 15px var(--neon-gold)';
-        if(teamTab) teamTab.style.display = 'inline-block'; // Nur Founder sehen das Team Panel
-        window.loadAdminTeamList(); // Lädt die Passwörter
+        if(teamTab) teamTab.style.display = 'inline-block';
+        window.loadAdminTeamList();
     } else {
         title.innerText = `ADMIN TERMINAL [${name.toUpperCase()}]`;
         title.style.color = 'var(--neon-blue)';
         title.style.textShadow = '0 0 15px var(--neon-blue)';
-        if(teamTab) teamTab.style.display = 'none'; // Admins dürfen das nicht sehen!
+        if(teamTab) teamTab.style.display = 'none';
     }
 };
 
@@ -168,13 +168,10 @@ window.checkAdminLogin = async function() {
 
         if (data.success) {
             pwInput.value = ''; 
-            
             if (data.role === 'founder_pending') {
-                // Zeige den Can/Asta Auswahlbildschirm
                 document.getElementById('admin-login-view').style.display = 'none';
                 document.getElementById('admin-identity-view').style.display = 'block';
             } else {
-                // Normaler Admin oder Master Admin loggt sich direkt ein
                 sessionStorage.setItem('adminRole', 'admin');
                 sessionStorage.setItem('adminName', data.name);
                 window.applyAdminUI('admin', data.name);
@@ -207,8 +204,6 @@ window.switchTerminalTab = function(tab) {
     document.getElementById('term-content-team').style.display = tab === 'team' ? 'block' : 'none';
 };
 
-// --- TEAM MANAGEMENT LOGIK ---
-
 window.createTeamMember = async function() {
     const name = document.getElementById('new-team-name').value.trim();
     const role = document.getElementById('new-team-role').value;
@@ -226,8 +221,8 @@ window.createTeamMember = async function() {
             window.showToast("Teamler angelegt!", "#00ffaa");
             document.getElementById('new-team-name').value = '';
             document.getElementById('new-team-pw').value = '';
-            window.loadAdminTeamList(); // Admin Liste updaten
-            window.loadPublicTeam();    // Öffentliche Liste auf der Website updaten
+            window.loadAdminTeamList(); 
+            window.loadPublicTeam();    
         }
     } catch (e) { window.showToast("Fehler beim Anlegen!", "#ff3333"); }
 };
@@ -260,7 +255,7 @@ window.loadAdminTeamList = async function() {
 };
 
 window.deleteTeamMember = async function(id) {
-    if(!confirm("Diesen Account wirklich löschen? Er kann sich danach nicht mehr einloggen!")) return;
+    if(!confirm("Diesen Account wirklich löschen?")) return;
     try {
         await fetch(`${API_URL}/team/${id}`, { method: 'DELETE' });
         window.loadAdminTeamList();
@@ -279,8 +274,6 @@ window.loadPublicTeam = async function() {
         
         data.data.forEach(member => {
             let color = member.role === 'Admin' ? 'var(--neon-blue)' : (member.role === 'Mod' ? '#00ffaa' : 'var(--neon-purple)');
-            
-            // ULTRA KOMPAKT VERSION
             teamBar.innerHTML += `
                 <div class="team-card scroll-visible" style="border: 1px solid ${color}; background: rgba(0,0,0,0.6); padding: 6px 15px; min-width: 110px; border-radius: 6px; box-shadow: 0 0 8px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;">
                     <div class="role" style="color: ${color}; font-size: 0.6rem; letter-spacing: 0.5px; font-weight: bold; font-family: 'Orbitron';">${member.role.toUpperCase()}</div>
@@ -288,18 +281,13 @@ window.loadPublicTeam = async function() {
                 </div>
             `;
         });
-    } catch (e) { 
-        console.error("Konnte Teamliste nicht laden."); 
-    }
+    } catch (e) { console.error("Konnte Teamliste nicht laden."); }
 };
 
-// Lädt das Team auf der Website automatisch beim Start!
 document.addEventListener('DOMContentLoaded', () => {
     window.updateFabUI();
     window.loadPublicTeam();
-    window.loadEvents(); // <-- DAS HIER NEU HINZUFÜGEN!
-    
-    // ... restlicher Code ...
+    window.loadEvents(); 
 });
 
 window.logoutAdmin = function() { window.logoutUser(); };
@@ -307,7 +295,6 @@ window.logoutAdmin = function() { window.logoutUser(); };
 // =========================================
 // 4. ALLGEMEINE UI FUNKTIONEN
 // =========================================
-
 window.showToast = function(message, color = 'var(--neon-purple)', icon = 'fas fa-bell') {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -322,11 +309,10 @@ window.showToast = function(message, color = 'var(--neon-purple)', icon = 'fas f
 window.toggleImpressum = () => { const m = document.getElementById('impressum-modal'); if(m) m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; };
 window.toggleRules = () => { const m = document.getElementById('rules-modal'); if(m) m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; };
 window.showDailyToast = () => { window.showToast("Feature in Arbeit. Kommt noch!", "var(--neon-gold)", "fas fa-clock"); };
-
 window.closeUniversalModal = function() { const m = document.getElementById('universal-modal'); if(m) m.style.display = 'none'; };
 
 window.addEventListener('click', e => { 
-    if (e.target.id === 'admin-modal') window.closeAdminPanel(); 
+    if (e.target.id === 'admin-modal') document.getElementById('admin-modal').style.display='none'; 
     if (e.target.id === 'universal-modal') window.closeUniversalModal(); 
     if (e.target.id === 'rules-modal') window.toggleRules(); 
     if (e.target.id === 'impressum-modal') window.toggleImpressum(); 
@@ -346,14 +332,13 @@ window.moveCarousel = function(direction) {
 };
 
 // =========================================
-// 5. INBOX & FORMULARE (TICKETS, UNBAN, ETC)
+// 5. INBOX & FORMULARE
 // =========================================
 let currentFormType = '';
 window.inboxData = []; 
 
 window.openForm = function(type) {
     const isFounderOrAdmin = !!sessionStorage.getItem('adminRole');
-    
     if (!loggedInUser && !isFounderOrAdmin) {
         const authModal = document.getElementById('auth-modal');
         if(authModal) authModal.style.display = 'flex';
@@ -362,7 +347,6 @@ window.openForm = function(type) {
     }
     
     currentFormType = type; 
-    
     const title = document.getElementById('form-title');
     const userField = document.getElementById('form-username');
     const ticketSelect = document.getElementById('form-ticket-type');
@@ -374,7 +358,6 @@ window.openForm = function(type) {
     else if (type === 'vorschlag') title.innerText = 'SERVER VORSCHLAG';
     else if (type === 'ticket') title.innerText = 'SUPPORT TICKET';
     
-    // Namensfeld steuern (Admins dürfen ändern, User nicht)
     if (isFounderOrAdmin) {
         userField.value = sessionStorage.getItem('adminName') || 'Admin';
         userField.disabled = false; 
@@ -383,11 +366,9 @@ window.openForm = function(type) {
         userField.disabled = true; 
     }
     
-    // Ticket Dropdown anzeigen/verstecken
     if (ticketSelect) ticketSelect.style.display = (type === 'ticket') ? 'block' : 'none';
-    
-    // Datei-Upload steuern
     if (fileInput) fileInput.value = ''; 
+    
     if (type === 'vorschlag') {
         if (fileArea) fileArea.style.display = 'block';
         if (fileInput) fileInput.accept = 'image/jpeg, image/png, image/gif';
@@ -412,24 +393,19 @@ window.submitUniversalForm = async function() {
     const fileInput = document.getElementById('form-file');
     
     if (!username || !text) {
-        window.showToast("Bitte Name und Nachricht ausfüllen!", "#ffaa00", "fas fa-exclamation-triangle");
-        return;
+        window.showToast("Bitte Name und Nachricht ausfüllen!", "#ffaa00", "fas fa-exclamation-triangle"); return;
     }
     
     const btn = document.getElementById('submit-universal-btn');
     btn.disabled = true; btn.innerText = "SENDET...";
     
     let fileBase64 = null;
-    
     if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        // 1MB Limit Prüfung
         if (file.size > 1048576) {
             window.showToast("Datei ist zu groß! (Max. 1MB)", "#ff3333", "fas fa-times");
-            btn.disabled = false; btn.innerText = "ABSENDEN";
-            return;
+            btn.disabled = false; btn.innerText = "ABSENDEN"; return;
         }
-        
         fileBase64 = await new Promise((resolve) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result);
@@ -437,48 +413,27 @@ window.submitUniversalForm = async function() {
         });
     }
     
-    const payload = {
-        type: currentFormType,
-        username: username,
-        text: text,
-        category: currentFormType === 'ticket' ? category : null,
-        file: fileBase64
-    };
+    const payload = { type: currentFormType, username, text, category: currentFormType === 'ticket' ? category : null, file: fileBase64 };
     
     try {
-        const response = await fetch(`${API_URL}/submissions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const response = await fetch(`${API_URL}/submissions`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         const data = await response.json();
         
         if (data.success) {
             window.showToast("Erfolgreich gesendet!", "#00ffaa", "fas fa-check");
             document.getElementById('universal-modal').style.display = 'none';
-        } else {
-            window.showToast("Fehler beim Senden!", "#ff3333", "fas fa-times");
-        }
-    } catch (e) {
-        window.showToast("Backend offline!", "#ff3333", "fas fa-server");
-    } finally {
-        btn.disabled = false; btn.innerText = "ABSENDEN";
-    }
+        } else { window.showToast("Fehler beim Senden!", "#ff3333", "fas fa-times"); }
+    } catch (e) { window.showToast("Backend offline!", "#ff3333", "fas fa-server");
+    } finally { btn.disabled = false; btn.innerText = "ABSENDEN"; }
 };
-
-// ... (Die openForm und submitUniversalForm bleiben so wie sie vorher waren) ...
 
 let currentInboxFilter = 'all';
 let currentlyOpenTicketId = null;
 
 window.filterInbox = function(filter) {
     currentInboxFilter = filter;
-    
-    // UI Tabs anpassen
     document.querySelectorAll('.inbox-tab').forEach(btn => btn.classList.remove('active'));
     document.getElementById('tab-' + filter).classList.add('active');
-    
-    // Liste neu rendern
     window.renderInboxList();
 };
 
@@ -495,39 +450,26 @@ window.openInbox = async function() {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: adminRole, username: user })
         });
         const data = await response.json();
-        
-        if (data.success) {
-            window.inboxData = data.data; 
-            window.renderInboxList(); // Zeichnet die gefilterte Liste
-        }
-    } catch (e) {
-        document.getElementById('inbox-list').innerHTML = `<p style="color: #ff3333; text-align: center; margin-top: 20px;">Verbindungsfehler.</p>`;
-    }
+        if (data.success) { window.inboxData = data.data; window.renderInboxList(); }
+    } catch (e) { document.getElementById('inbox-list').innerHTML = `<p style="color: #ff3333; text-align: center; margin-top: 20px;">Verbindungsfehler.</p>`; }
 };
 
 window.renderInboxList = function() {
     const listElement = document.getElementById('inbox-list');
     listElement.innerHTML = '';
     
-    // Filtern nach Kategorien
     let filteredData = window.inboxData.filter(item => {
         if (currentInboxFilter === 'closed') return item.status === 'closed';
-        if (item.status === 'closed') return false; // Ausgeblendete verbergen, wenn nicht im "Erledigt" Tab
-        
+        if (item.status === 'closed') return false; 
         if (currentInboxFilter === 'all') return true;
         return item.type === currentInboxFilter;
     });
 
-    if (filteredData.length === 0) {
-        listElement.innerHTML = `<p style="color: #666; text-align: center; margin-top: 20px; font-family: 'Poppins';">Keine Einträge gefunden.</p>`;
-        return;
-    }
+    if (filteredData.length === 0) { listElement.innerHTML = `<p style="color: #666; text-align: center; margin-top: 20px; font-family: 'Poppins';">Keine Einträge gefunden.</p>`; return; }
 
     filteredData.forEach(item => {
         let color = item.status === 'closed' ? '#555' : (item.type === 'unban' ? '#ff3333' : (item.type === 'ticket' ? '#00ffaa' : 'var(--neon-purple)'));
         let icon = item.status === 'closed' ? 'fa-check-circle' : (item.type === 'unban' ? 'fa-ban' : (item.type === 'ticket' ? 'fa-ticket-alt' : 'fa-lightbulb'));
-        
-        // Finde den echten Index im Haupt-Array für die Detailansicht
         let realIndex = window.inboxData.findIndex(d => d.id === item.id);
 
         listElement.innerHTML += `
@@ -557,10 +499,8 @@ window.showInboxDetail = function(index) {
         else if (item.file.startsWith('data:image')) mediaHtml = `<div style="margin-top: 15px;"><img src="${item.file}" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);"></div>`;
     }
 
-    // Chat Nachrichten rendern
     let chatHtml = `<div class="chat-area custom-scroll" style="flex: 1; overflow-y: auto; padding: 20px; background: #0f0f0f; display: flex; flex-direction: column; gap: 15px;">`;
     
-    // Das erste Ticket-Feld als "erste Nachricht"
     chatHtml += `
         <div style="align-self: flex-start; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px 10px 10px 0; max-width: 80%; border: 1px solid rgba(255,255,255,0.05);">
             <div style="font-size: 0.7rem; color: #888; font-family: 'Orbitron'; margin-bottom: 5px;">${item.username} (Ersteller)</div>
@@ -569,7 +509,6 @@ window.showInboxDetail = function(index) {
         </div>
     `;
 
-    // Antworten aus dem Array
     if (item.messages) {
         item.messages.forEach(msg => {
             let isStaff = msg.role === 'founder' || msg.role === 'admin';
@@ -587,9 +526,8 @@ window.showInboxDetail = function(index) {
             `;
         });
     }
-    chatHtml += `</div>`; // Chat Area End
+    chatHtml += `</div>`; 
 
-    // Eingabefeld & Buttons (Nur wenn nicht geschlossen)
     let inputHtml = '';
     if (item.status !== 'closed') {
         inputHtml = `
@@ -615,7 +553,6 @@ window.showInboxDetail = function(index) {
         ${inputHtml}
     `;
     
-    // Nach unten scrollen im Chat
     setTimeout(() => {
         const chatArea = detailElement.querySelector('.chat-area');
         if(chatArea) chatArea.scrollTop = chatArea.scrollHeight;
@@ -640,17 +577,12 @@ window.sendChatMessage = async function(index) {
         const data = await response.json();
         
         if (data.success) {
-            // Lokal das Array updaten, damit wir nicht alles neu laden müssen
             if (!item.messages) item.messages = [];
             item.messages.push(data.message);
-            window.showInboxDetail(index); // Chat direkt neu zeichnen
+            window.showInboxDetail(index); 
         }
-    } catch (e) {
-        window.showToast("Fehler beim Senden", "#ff3333", "fas fa-times");
-    } finally {
-        inputField.disabled = false;
-        setTimeout(() => inputField.focus(), 50);
-    }
+    } catch (e) { window.showToast("Fehler beim Senden", "#ff3333", "fas fa-times");
+    } finally { inputField.disabled = false; setTimeout(() => inputField.focus(), 50); }
 };
 
 window.closeTicket = async function(index) {
@@ -665,20 +597,16 @@ window.closeTicket = async function(index) {
             item.status = 'closed';
             item.closedAt = new Date().toISOString();
             window.showToast("Ticket geschlossen!", "#00ffaa", "fas fa-check");
-            window.filterInbox(currentInboxFilter); // Liste aktualisieren
+            window.filterInbox(currentInboxFilter); 
             document.getElementById('inbox-detail').innerHTML = `<div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #666; font-family: 'Orbitron';">Wähle einen Eintrag aus.</div>`;
         }
-    } catch (e) {
-        window.showToast("Fehler beim Schließen", "#ff3333", "fas fa-times");
-    }
+    } catch (e) { window.showToast("Fehler beim Schließen", "#ff3333", "fas fa-times"); }
 };
 
 // =========================================
-// 6. INITIALISIERUNG BEIM LADEN (ANIMATIONEN)
+// 6. INITIALISIERUNG & EVENT FUNKTIONEN
 // =========================================
 document.addEventListener('DOMContentLoaded', () => {
-    window.updateFabUI();
-
     const observer = new IntersectionObserver((entries) => { 
         entries.forEach(entry => { 
             if (entry.isIntersecting) { 
@@ -724,14 +652,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dx = e.clientX - (rect.left + rect.width/2);
                 const dy = e.clientY - (rect.top + rect.height/2);
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                
-                if(dist < 120) {
-                    const pushX = -(dx / dist) * 40;
-                    const pushY = -(dy / dist) * 40;
-                    container.style.transform = `translate(${pushX}px, ${pushY}px)`;
-                } else {
-                    container.style.transform = `translate(0px, 0px)`;
-                }
+                if(dist < 120) { container.style.transform = `translate(${-(dx / dist) * 40}px, ${-(dy / dist) * 40}px)`;
+                } else { container.style.transform = `translate(0px, 0px)`; }
             });
         });
     }
@@ -742,55 +664,33 @@ window.loadEvents = async function() {
         const response = await fetch(`${API_URL}/events?t=${new Date().getTime()}`);
         const data = await response.json(); 
         
-        // Wir gehen alle 3 Karten durch (Slot 0, 1 und 2)
         for (let i = 0; i < 3; i++) {
             const titleEl = document.getElementById(`title-${i}`);
             const dateEl = document.getElementById(`date-${i}`);
             const timerEl = document.getElementById(`timer-${i}`);
             const badgeEl = document.getElementById(`badge-${i}`);
-
-            // Wir schauen, ob das Backend unter "0", "1" oder "2" etwas gespeichert hat
             const ev = data[i] || data[String(i)];
 
             if (ev && ev.title) {
-                // Event gefunden! Wir tragen es ein.
                 if (titleEl) titleEl.innerText = ev.title;
-                
-                // HIER IST DER FIX: Wir nutzen displayDate oder dateStr!
                 if (dateEl) dateEl.innerText = ev.displayDate || ev.dateStr; 
-                
-                if (badgeEl) {
-                    badgeEl.innerText = "GEPLANT";
-                    badgeEl.style.background = "var(--neon-blue)";
-                }
-                
-                // Timer starten mit dateStr und timeStr
-                if (ev.timeStr && ev.dateStr && window.startTimer) {
-                    window.startTimer(i, `${ev.dateStr} ${ev.timeStr}`);
-                }
+                if (badgeEl) { badgeEl.innerText = "GEPLANT"; badgeEl.style.background = "var(--neon-blue)"; }
+                if (ev.timeStr && ev.dateStr && window.startTimer) window.startTimer(i, `${ev.dateStr} ${ev.timeStr}`);
             } else {
-                // Kein Event da -> Zurücksetzen
                 if (titleEl) titleEl.innerText = "Kein Event geplant";
                 if (dateEl) dateEl.innerText = "--.--.----";
                 if (timerEl) timerEl.innerText = "00:00:00";
-                if (badgeEl) {
-                    badgeEl.innerText = "SOON";
-                    badgeEl.style.background = "#333";
-                }
+                if (badgeEl) { badgeEl.innerText = "SOON"; badgeEl.style.background = "#333"; }
             }
         }
-    } catch (e) {
-        console.error("Fehler beim Laden der Events:", e);
-    }
+    } catch (e) { console.error("Fehler beim Laden der Events:", e); }
 };
 
-// Hilfsfunktion für den Countdown
-function startTimer(slot, targetStr) {
+window.startTimer = function(slot, targetStr) {
     const timerEl = document.getElementById(`timer-${slot}`);
     if (!timerEl) return;
 
     function update() {
-        // Umwandlung von DD.MM.YYYY HH:MM zu einem Datumsobjekt
         const parts = targetStr.split(/[\s.:]+/);
         const targetDate = new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]);
         const now = new Date();
@@ -808,12 +708,9 @@ function startTimer(slot, targetStr) {
         const s = Math.floor((diff % 60000) / 1000);
         timerEl.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
-    
-    update();
-    setInterval(update, 1000);
-}
+    update(); setInterval(update, 1000);
+};
 
-// --- EVENT FUNKTIONEN ---
 window.formatTime = function(input) {
     let val = input.value.replace(/\D/g, '');
     if (val.length > 2) val = val.substring(0, 2) + ':' + val.substring(2, 4);
@@ -833,69 +730,51 @@ window.updateMainEvent = async function() {
     const time = document.getElementById('edit-ev-time').value.trim();
     const date = document.getElementById('edit-ev-date').value.trim();
 
-    if (!title || !time || !date) {
-        window.showToast("Bitte alle Event-Felder ausfüllen!", "#ffaa00", "fas fa-exclamation-triangle");
-        return;
-    }
-
+    if (!title || !time || !date) { window.showToast("Bitte alle Event-Felder ausfüllen!", "#ffaa00", "fas fa-exclamation-triangle"); return; }
     const btn = document.querySelector('#term-content-events button');
     btn.innerText = "SPEICHERT...";
 
     try {
         const response = await fetch(`${API_URL}/events/${slot}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, time, date })
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, time, date })
         });
         const data = await response.json();
-        
         if (data.success) {
             window.showToast("Event erfolgreich aktualisiert!", "#00ffaa", "fas fa-calendar-check");
-            document.getElementById('edit-ev-title').value = '';
-            document.getElementById('edit-ev-time').value = '';
-            document.getElementById('edit-ev-date').value = '';
-            
-            // HIER IST DER MAGISCHE BEFEHL: Lade die Ansicht SOFORT neu!
-            if (typeof window.loadEvents === 'function') {
-                window.loadEvents(); 
-            }
-        } else {
-            window.showToast("Fehler beim Speichern", "#ff3333", "fas fa-times");
-        }
-    } catch (e) {
-        window.showToast("Backend offline!", "#ff3333", "fas fa-server");
-    } finally {
-        btn.innerText = "EVENT LIVE SCHALTEN";
-    }
+            document.getElementById('edit-ev-title').value = ''; document.getElementById('edit-ev-time').value = ''; document.getElementById('edit-ev-date').value = '';
+            if (typeof window.loadEvents === 'function') window.loadEvents(); 
+        } else { window.showToast("Fehler beim Speichern", "#ff3333", "fas fa-times"); }
+    } catch (e) { window.showToast("Backend offline!", "#ff3333", "fas fa-server");
+    } finally { btn.innerText = "LIVE SCHALTEN"; }
 };
 
 window.deleteMainEvent = async function() {
     const slot = document.getElementById('edit-ev-select').value;
-    
-    // Sicherheitsabfrage, damit man nicht aus Versehen klickt!
     if (!confirm("Möchtest du dieses Event wirklich löschen?")) return;
 
     try {
-        // Wir schicken einen DELETE-Befehl an das Backend
-        const response = await fetch(`${API_URL}/events/${slot}`, {
-            method: 'DELETE'
-        });
+        const response = await fetch(`${API_URL}/events/${slot}?t=${Date.now()}`, { method: 'DELETE' });
         const data = await response.json();
-        
         if (data.success) {
             window.showToast("Event erfolgreich gelöscht!", "#ff3333", "fas fa-trash");
-            document.getElementById('edit-ev-title').value = '';
-            document.getElementById('edit-ev-time').value = '';
-            document.getElementById('edit-ev-date').value = '';
-            
-            // Ansicht sofort neu laden, damit die Karte wieder "leer" wird
-            if (typeof window.loadEvents === 'function') {
-                window.loadEvents(); 
-            }
-        } else {
-            window.showToast("Fehler beim Löschen", "#ff3333", "fas fa-times");
-        }
-    } catch (e) {
-        window.showToast("Backend offline!", "#ff3333", "fas fa-server");
-    }
+            document.getElementById('edit-ev-title').value = ''; document.getElementById('edit-ev-time').value = ''; document.getElementById('edit-ev-date').value = '';
+            if (typeof window.loadEvents === 'function') window.loadEvents(); 
+        } else { window.showToast("Fehler beim Löschen", "#ff3333", "fas fa-times"); }
+    } catch (e) { window.showToast("Backend offline!", "#ff3333", "fas fa-server"); }
 };
+
+// =========================================
+// 7. KEYBOARD SHORTCUTS (ESC ZUM SCHLIESSEN)
+// =========================================
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        const adminModal = document.getElementById('admin-modal');
+        if (adminModal && adminModal.style.display !== 'none') adminModal.style.display = 'none';
+        
+        const inboxModal = document.getElementById('inbox-modal');
+        if (inboxModal && inboxModal.style.display !== 'none') inboxModal.style.display = 'none';
+        
+        const universalModal = document.getElementById('universal-modal');
+        if (universalModal && universalModal.style.display !== 'none') universalModal.style.display = 'none';
+    }
+});

@@ -739,26 +739,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.loadEvents = async function() {
     try {
-        const response = await fetch(`${API_URL}/events`);
+        const response = await fetch(`${API_URL}/events?t=${new Date().getTime()}`);
         const data = await response.json();
         
-        if (data.success) {
-            data.data.forEach(ev => {
-                const titleEl = document.getElementById(`title-${ev.slot}`);
-                const dateEl = document.getElementById(`date-${ev.slot}`);
-                const badgeEl = document.getElementById(`badge-${ev.slot}`);
-                
+        // 1. Wir holen die Events, egal wie das Backend sie verpackt hat
+        let events = [];
+        if (Array.isArray(data)) events = data;
+        else if (Array.isArray(data.data)) events = data.data;
+        else if (typeof data === 'object') {
+            events = Object.values(data.data || data).filter(e => e && e.title);
+        }
+
+        // 2. Wir zwingen die Daten in die 3 Karten (Slot 0, 1 und 2)
+        for (let i = 0; i < 3; i++) {
+            // Finde das Event für diesen Slot (falls es existiert)
+            const ev = events.find(e => String(e.slot) === String(i) || String(e.id) === String(i));
+            
+            const titleEl = document.getElementById(`title-${i}`);
+            const dateEl = document.getElementById(`date-${i}`);
+            const timerEl = document.getElementById(`timer-${i}`);
+            const badgeEl = document.getElementById(`badge-${i}`);
+
+            if (ev && ev.title) {
+                // Wenn ein Event da ist -> eintragen!
                 if (titleEl) titleEl.innerText = ev.title;
                 if (dateEl) dateEl.innerText = ev.date;
-                
-                // Timer Logik starten
-                if (ev.time && ev.date) {
-                    startTimer(ev.slot, `${ev.date} ${ev.time}`);
+                if (badgeEl) {
+                    badgeEl.innerText = "GEPLANT";
+                    badgeEl.style.background = "var(--neon-blue)";
                 }
-            });
+                if (ev.time && ev.date && window.startTimer) {
+                    window.startTimer(i, `${ev.date} ${ev.time}`);
+                }
+            } else {
+                // Wenn KEIN Event da ist -> auf Standard zurücksetzen
+                if (titleEl) titleEl.innerText = "Kein Event geplant";
+                if (dateEl) dateEl.innerText = "--.--.----";
+                if (timerEl) timerEl.innerText = "00:00:00";
+                if (badgeEl) {
+                    badgeEl.innerText = "SOON";
+                    badgeEl.style.background = "#333";
+                }
+            }
         }
     } catch (e) {
-        console.error("Events konnten nicht geladen werden.");
+        console.error("Events Error:", e);
     }
 };
 
@@ -816,6 +841,9 @@ window.updateMainEvent = async function() {
         return;
     }
 
+    const btn = document.querySelector('#term-content-events button');
+    btn.innerText = "SPEICHERT...";
+
     try {
         const response = await fetch(`${API_URL}/events/${slot}`, {
             method: 'POST',
@@ -826,16 +854,20 @@ window.updateMainEvent = async function() {
         
         if (data.success) {
             window.showToast("Event erfolgreich aktualisiert!", "#00ffaa", "fas fa-calendar-check");
-            window.loadEvents();
             document.getElementById('edit-ev-title').value = '';
             document.getElementById('edit-ev-time').value = '';
             document.getElementById('edit-ev-date').value = '';
-            // Falls du eine Lade-Funktion für die Slider hast, hier aufrufen:
-            // window.loadEvents(); 
+            
+            // HIER IST DER MAGISCHE BEFEHL: Lade die Ansicht SOFORT neu!
+            if (typeof window.loadEvents === 'function') {
+                window.loadEvents(); 
+            }
         } else {
             window.showToast("Fehler beim Speichern", "#ff3333", "fas fa-times");
         }
     } catch (e) {
         window.showToast("Backend offline!", "#ff3333", "fas fa-server");
+    } finally {
+        btn.innerText = "EVENT LIVE SCHALTEN";
     }
 };

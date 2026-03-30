@@ -740,39 +740,36 @@ document.addEventListener('DOMContentLoaded', () => {
 window.loadEvents = async function() {
     try {
         const response = await fetch(`${API_URL}/events?t=${new Date().getTime()}`);
-        const data = await response.json();
+        const data = await response.json(); 
         
-        // 1. Wir holen die Events, egal wie das Backend sie verpackt hat
-        let events = [];
-        if (Array.isArray(data)) events = data;
-        else if (Array.isArray(data.data)) events = data.data;
-        else if (typeof data === 'object') {
-            events = Object.values(data.data || data).filter(e => e && e.title);
-        }
-
-        // 2. Wir zwingen die Daten in die 3 Karten (Slot 0, 1 und 2)
+        // Wir gehen alle 3 Karten durch (Slot 0, 1 und 2)
         for (let i = 0; i < 3; i++) {
-            // Finde das Event für diesen Slot (falls es existiert)
-            const ev = events.find(e => String(e.slot) === String(i) || String(e.id) === String(i));
-            
             const titleEl = document.getElementById(`title-${i}`);
             const dateEl = document.getElementById(`date-${i}`);
             const timerEl = document.getElementById(`timer-${i}`);
             const badgeEl = document.getElementById(`badge-${i}`);
 
+            // Wir schauen, ob das Backend unter "0", "1" oder "2" etwas gespeichert hat
+            const ev = data[i] || data[String(i)];
+
             if (ev && ev.title) {
-                // Wenn ein Event da ist -> eintragen!
+                // Event gefunden! Wir tragen es ein.
                 if (titleEl) titleEl.innerText = ev.title;
-                if (dateEl) dateEl.innerText = ev.date;
+                
+                // HIER IST DER FIX: Wir nutzen displayDate oder dateStr!
+                if (dateEl) dateEl.innerText = ev.displayDate || ev.dateStr; 
+                
                 if (badgeEl) {
                     badgeEl.innerText = "GEPLANT";
                     badgeEl.style.background = "var(--neon-blue)";
                 }
-                if (ev.time && ev.date && window.startTimer) {
-                    window.startTimer(i, `${ev.date} ${ev.time}`);
+                
+                // Timer starten mit dateStr und timeStr
+                if (ev.timeStr && ev.dateStr && window.startTimer) {
+                    window.startTimer(i, `${ev.dateStr} ${ev.timeStr}`);
                 }
             } else {
-                // Wenn KEIN Event da ist -> auf Standard zurücksetzen
+                // Kein Event da -> Zurücksetzen
                 if (titleEl) titleEl.innerText = "Kein Event geplant";
                 if (dateEl) dateEl.innerText = "--.--.----";
                 if (timerEl) timerEl.innerText = "00:00:00";
@@ -783,7 +780,7 @@ window.loadEvents = async function() {
             }
         }
     } catch (e) {
-        console.error("Events Error:", e);
+        console.error("Fehler beim Laden der Events:", e);
     }
 };
 

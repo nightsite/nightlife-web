@@ -1,10 +1,9 @@
 async function updateDiscordStats() {
     try {
-        // Wir rufen jetzt nicht mehr Discord an, sondern unser EIGENES Backend!
-        const response = await fetch('http://localhost:3000/api/discord-stats');
+        const apiUrl = (window.NIGHTLIFE_API_URL || 'https://backend-c5xeyazdn-efeomer019-8833s-projects.vercel.app/api').replace(/\/$/, '');
+        const response = await fetch(`${apiUrl}/discord-stats`);
         const data = await response.json();
         
-        // Wenn das Backend erfolgreich geantwortet hat, füllen wir alle 4 Felder:
         if (data.success) {
             document.getElementById('stat-total').innerText = data.total;
             document.getElementById('stat-online').innerText = data.online;
@@ -16,8 +15,5 @@ async function updateDiscordStats() {
     }
 }
 
-// Sofort beim Laden der Website ausführen
 updateDiscordStats();
-
-// Alle 60 Sekunden updaten (damit die Zahlen live bleiben)
 setInterval(updateDiscordStats, 60000);

@@ -9,7 +9,6 @@
     --neon-blue: #00f0ff;
     --neon-gold: #ffaa00;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
  
 ::-webkit-scrollbar { width: 8px; }

@@ -1,7 +1,7 @@
 // =========================================
 // 1. GLOBALE VARIABLEN & CONFIG
 // =========================================
-const API_URL = "https://nightlife-backend-vijo.onrender.com/api";
+const API_URL = (window.NIGHTLIFE_API_URL || "https://backend-c5xeyazdn-efeomer019-8833s-projects.vercel.app/api").replace(/\/$/, '');
 window.isAdminView = false;
 
 // =========================================

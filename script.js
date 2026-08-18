@@ -321,9 +321,17 @@ window.addEventListener('click', e => {
 });
 
 let currentActiveIndex = 1;
-let autoScrollInterval = setInterval(() => { window.moveCarousel(1); }, 10000);
+let autoScrollInterval = null;
+function restartCarouselAutoplay() {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+    if (!document.hidden) autoScrollInterval = setInterval(() => { window.moveCarousel(1); }, 10000);
+}
+restartCarouselAutoplay();
+document.addEventListener('visibilitychange', restartCarouselAutoplay);
+
 window.moveCarousel = function(direction) {
-    clearInterval(autoScrollInterval); autoScrollInterval = setInterval(() => { window.moveCarousel(1); }, 10000);
+    restartCarouselAutoplay();
     const cards = document.querySelectorAll('.event-card'); 
     if(!cards.length) return;
     let newActive = currentActiveIndex + direction; if (newActive > 2) newActive = 0; if (newActive < 0) newActive = 2;
@@ -624,40 +632,62 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-links a').forEach(item => { item.addEventListener('click', () => navLinks.classList.remove('active')); });
     }
 
-    if (window.innerWidth > 768) {
-        document.addEventListener('mousemove', (e) => {
-            requestAnimationFrame(() => {
-                const x = (e.clientX / window.innerWidth) - 0.5; const y = (e.clientY / window.innerHeight) - 0.5;
-                const orb1 = document.querySelector('.orb-1'); const orb2 = document.querySelector('.orb-2');
-                if(orb1 && orb2) { orb1.style.transform = `translate(${x*60}px, ${y*60}px)`; orb2.style.transform = `translate(${x*-60}px, ${y*-60}px)`; }
-            });
-        });
-    }
-
     const particleContainer = document.querySelector('.particles');
+    const orb1 = document.querySelector('.orb-1');
+    const orb2 = document.querySelector('.orb-2');
     const dots = [];
-    if(particleContainer) {
-        for(let i=0; i<30; i++) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const particleCount = reduceMotion ? 0 : (finePointer ? 16 : 8);
+
+    if (particleContainer) {
+        for(let i=0; i<particleCount; i++) {
+            const xRatio = Math.random();
+            const yRatio = Math.random();
             let container = document.createElement('div'); container.className = 'dot-container';
-            container.style.top = Math.random() * 100 + 'vh'; container.style.left = Math.random() * 100 + 'vw';
+            container.style.top = yRatio * 100 + 'vh'; container.style.left = xRatio * 100 + 'vw';
             let dot = document.createElement('div'); dot.className = 'dot';
             if(Math.random() > 0.5) { dot.style.background = 'var(--neon-purple)'; dot.style.boxShadow = '0 0 10px var(--neon-purple)'; }
             dot.style.animationDelay = (Math.random() * 4) + 's';
-            container.appendChild(dot); particleContainer.appendChild(container); dots.push(container);
+            container.appendChild(dot); particleContainer.appendChild(container); dots.push({ element: container, xRatio, yRatio });
         }
-        
-        document.addEventListener('mousemove', (e) => {
-            dots.forEach(container => {
-                const rect = container.getBoundingClientRect();
-                const dx = e.clientX - (rect.left + rect.width/2);
-                const dy = e.clientY - (rect.top + rect.height/2);
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if(dist < 120) { container.style.transform = `translate(${-(dx / dist) * 40}px, ${-(dy / dist) * 40}px)`;
-                } else { container.style.transform = `translate(0px, 0px)`; }
+    }
+
+    if (finePointer && !reduceMotion) {
+        let pointerX = 0;
+        let pointerY = 0;
+        let pointerFrame = null;
+
+        document.addEventListener('pointermove', (event) => {
+            pointerX = event.clientX;
+            pointerY = event.clientY;
+            if (pointerFrame !== null) return;
+
+            pointerFrame = requestAnimationFrame(() => {
+                pointerFrame = null;
+                const x = (pointerX / window.innerWidth) - 0.5;
+                const y = (pointerY / window.innerHeight) - 0.5;
+                if (orb1 && orb2) {
+                    orb1.style.transform = `translate3d(${x * 45}px, ${y * 45}px, 0)`;
+                    orb2.style.transform = `translate3d(${x * -45}px, ${y * -45}px, 0)`;
+                }
+
+                dots.forEach(({ element, xRatio, yRatio }) => {
+                    const dx = pointerX - (xRatio * window.innerWidth);
+                    const dy = pointerY - (yRatio * window.innerHeight);
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > 0 && dist < 120) {
+                        element.style.transform = `translate3d(${-(dx / dist) * 32}px, ${-(dy / dist) * 32}px, 0)`;
+                    } else {
+                        element.style.transform = 'translate3d(0, 0, 0)';
+                    }
+                });
             });
-        });
+        }, { passive: true });
     }
 });
+
+const eventTimerIntervals = new Map();
 
 window.loadEvents = async function() {
     try {
@@ -677,6 +707,8 @@ window.loadEvents = async function() {
                 if (badgeEl) { badgeEl.innerText = "GEPLANT"; badgeEl.style.background = "var(--neon-blue)"; }
                 if (ev.timeStr && ev.dateStr && window.startTimer) window.startTimer(i, `${ev.dateStr} ${ev.timeStr}`);
             } else {
+                clearInterval(eventTimerIntervals.get(i));
+                eventTimerIntervals.delete(i);
                 if (titleEl) titleEl.innerText = "Kein Event geplant";
                 if (dateEl) dateEl.innerText = "--.--.----";
                 if (timerEl) timerEl.innerText = "00:00:00";
@@ -690,6 +722,9 @@ window.startTimer = function(slot, targetStr) {
     const timerEl = document.getElementById(`timer-${slot}`);
     if (!timerEl) return;
 
+    clearInterval(eventTimerIntervals.get(slot));
+    eventTimerIntervals.delete(slot);
+
     function update() {
         const parts = targetStr.split(/[\s.:]+/);
         const targetDate = new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]);
@@ -700,15 +735,18 @@ window.startTimer = function(slot, targetStr) {
             timerEl.innerText = "JETZT LIVE";
             document.getElementById(`badge-${slot}`).innerText = "LIVE";
             document.getElementById(`badge-${slot}`).style.background = "red";
-            return;
+            clearInterval(eventTimerIntervals.get(slot));
+            eventTimerIntervals.delete(slot);
+            return false;
         }
 
         const h = Math.floor(diff / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
         timerEl.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        return true;
     }
-    update(); setInterval(update, 1000);
+    if (update()) eventTimerIntervals.set(slot, setInterval(update, 1000));
 };
 
 window.formatTime = function(input) {

@@ -33,7 +33,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 /* =========================================
    2. HINTERGRUND EFFEKTE
    ========================================= */
-.particles { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; pointer-events: none; }
+.particles { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; pointer-events: none; contain: strict; }
 .dot-container { position: absolute; transition: transform 0.3s ease-out; will-change: transform; }
 .dot { width: 5px; height: 5px; background: var(--neon-blue); border-radius: 50%; box-shadow: 0 0 10px var(--neon-blue); opacity: 0.5; animation: pulseDot 4s infinite alternate ease-in-out; }
 @keyframes pulseDot { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(2); opacity: 0.8; } }
@@ -46,7 +46,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 /* =========================================
    3. ALLGEMEINE SEKTIONEN
    ========================================= */
-.scroll-hidden { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); will-change: transform, opacity; }
+.scroll-hidden { opacity: 0; transform: translateY(40px); transition: opacity 0.65s cubic-bezier(0.5, 0, 0, 1), transform 0.65s cubic-bezier(0.5, 0, 0, 1); will-change: transform, opacity; }
 .scroll-visible { opacity: 1; transform: translateY(0); }
 section { padding: 80px 20px 20px; max-width: 1200px; margin: 0 auto; text-align: center; position: relative; z-index: 10; }
  
@@ -399,4 +399,30 @@ video, img { width: 100%; height: 100%; object-fit: contain; outline: none; back
     box-shadow: 0 0 20px var(--neon-purple);
     background: var(--neon-purple);
     color: #fff;
+}
+
+/* =========================================
+   15. PERFORMANCE & REDUCED MOTION
+   ========================================= */
+@media (max-width: 768px) {
+    .scanlines { opacity: 0.08; }
+    .orb { filter: blur(65px); }
+    nav,
+    .stats-container,
+    .event-card.active,
+    .join-feature,
+    .team-bar-mini,
+    .team-card,
+    .modal-base,
+    .fab-action { backdrop-filter: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+    .particles { display: none; }
 }
